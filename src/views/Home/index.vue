@@ -58,7 +58,7 @@
               </el-submenu>
 
               <!-- 没有子菜单的渲染为普通菜单项 -->
-              <el-menu-item v-else :index="menu.index" :key="menu.index">
+              <el-menu-item v-else :index="menu.index" :key="menu.index" :disabled="menu.disabled">
                 <i :class="menu.icon"></i>
                 <span class="aaa">{{ menu.title }}</span>
               </el-menu-item>
@@ -66,7 +66,6 @@
           </el-menu>
         </el-aside>
         <el-main style="overflow: hidden ">
-          <app-breadcrumb />
           <router-view v-slot="{ Component }">
             <transition name="fade-transform" mode="out-in">
               <component :is="Component" />
@@ -79,14 +78,10 @@
 </template>
 
 <script>
-import AppBreadcrumb from '../comounts/Breadcrumb.vue';
 import img666 from '../../assets/666.png';
 import img777 from '../../assets/777.png';
 
 export default {
-  components: {
-    AppBreadcrumb
-  },
   data() {
     return {
       isFullscreen: false,
@@ -95,6 +90,52 @@ export default {
       username: sessionStorage.getItem('userName'),
       nickname: sessionStorage.getItem('orgName'),
       userPermissions: [],
+      // 新增菜单（始终显示，运营总览永远在第一个）
+      extraMenus: [
+        { index: "/operation-overview", title: "运营总览", icon: "el-icon-menu" },
+        { index: "/ai-model", title: "AI模型", icon: "el-icon-menu" },
+        {
+          index: "business-operation",
+          title: "商業運營",
+          icon: "el-icon-menu",
+          children: [
+            { index: "/mall-management", title: "商城管理" },
+            { index: "/points-members", title: "積分與會員" },
+            { index: "/payment-management", title: "支付管理" },
+            { index: "/service-provider", title: "服務提供商" },
+          ],
+        },
+        {
+          index: "content-system",
+          title: "內容 & 系統",
+          icon: "el-icon-menu",
+          children: [
+            { index: "/content-cms", title: "內容管理 CMS" },
+            { index: "/permission-management", title: "權限管理" },
+            { index: "/system-setting", title: "系統設置" },
+            { index: "/warning-rule", title: "预警规则" },
+          ],
+        },
+        {
+          index: "health-coach",
+          title: "健康師",
+          icon: "el-icon-menu",
+          children: [
+            { index: "/hc-workbench", title: "工作台首頁" },
+            { index: "/hc-customer-list", title: "客戶列表" },
+            { index: "/hc-customer-detail", title: "客戶詳情" },
+            { index: "/hc-health-warning", title: "健康預警" },
+            { index: "/hc-followup", title: "随訪管理" },
+            { index: "/hc-health-plan", title: "健康計劃" },
+            { index: "/hc-consultation", title: "問診管理" },
+            { index: "/hc-message", title: "消息中心" },
+            { index: "/hc-interpretation", title: "手板結果解讀" },
+            { index: "/hc-recommend", title: "商品推薦" },
+            { index: "/hc-performance", title: "我的績效" },
+          ],
+        },
+        { index: "nutritionist", title: "营养师", icon: "el-icon-menu", disabled: true },
+      ],
       // 完整的菜单配置（包含所有可能的菜单项）
       allMenus: [
 
@@ -193,7 +234,7 @@ export default {
 
     // 过滤后的菜单（根据用户权限）
     filteredMenus() {
-      return this.allMenus
+      const permissionMenus = this.allMenus
         .map(menu => {
           // 处理有子菜单的情况
           if (menu.children) {
@@ -216,6 +257,9 @@ export default {
           }
         })
         .filter(menu => menu !== null); // 过滤掉没有权限的菜单
+
+      // 新增菜单始终展示，且运营总览永远在第一个
+      return [...this.extraMenus, ...permissionMenus];
     }
   },
   mounted() {
@@ -323,8 +367,10 @@ body {
 }
 
 .el-aside {
-  background-color: #089BAB;
+  background-color: #FFFFFF;
   height: 100%;
+  border-right: 1px solid #eef0f2;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.02);
 }
 
 .el-main {
@@ -434,28 +480,29 @@ body {
 
 .aaa {
   color: inherit !important;
-  width: 64px;
+  width: auto;
   height: 16px;
   font-family: PingFang SC Regular;
-  font-weight: 400;
-  font-size: 16px;
+  font-weight: inherit;
+  font-size: 14px;
   line-height: 16px;
   text-align: left;
+  margin-left: 6px;
+  white-space: nowrap;
 }
 
 .aa {
-  width: 64px;
+  width: 120px;
   height: 16px;
   font-family: PingFang SC Regular, PingFang SC Regular;
-  font-weight: 400;
-  font-size: 16px;
-  color: #FFFFFF;
-  line-height: 64px;
+  font-weight: inherit;
+  font-size: 14px;
+  color: inherit;
+  line-height: 46px;
   text-align: left;
   font-style: normal;
   text-transform: none;
   margin-left: 10px;
-  margin-right: 25px;
 }
 
 /* 核心菜单样式修改 */
@@ -464,14 +511,48 @@ body {
   background-color: transparent !important;
 }
 
+/* 顶级（无子级）菜单项样式 */
+.el-menu-vertical > .el-menu-item {
+  width: 184px !important;
+  height: 52px !important;
+  line-height: 52px !important;
+  border-radius: 10px !important;
+  color: #4b5563 !important;
+  margin: 4px 8px !important;
+  box-sizing: border-box !important;
+  transition: all 0.3s;
+}
+
+.el-menu-vertical > .el-menu-item i {
+  color: inherit !important;
+}
+
+.el-menu-vertical > .el-menu-item:hover {
+  background: #f1fafb !important;
+  color: #089BAB !important;
+}
+
+.el-menu-vertical > .el-menu-item.is-active {
+  background: #e3f5f7 !important;
+  color: #089BAB !important;
+  font-weight: 600;
+}
+
+.el-menu-vertical > .el-menu-item.is-disabled {
+  opacity: 1 !important;
+  color: #9ca3af !important;
+  cursor: not-allowed;
+}
+
 /* 一级菜单项样式 */
 .el-submenu__title {
-  width: 200px !important;
-  height: 64px !important;
+  width: 184px !important;
+  height: 52px !important;
+  line-height: 52px !important;
   background: transparent !important;
-  border-radius: 40px !important;
-  color: #FFFFFF !important;
-  margin: 5px 8px !important;
+  border-radius: 10px !important;
+  color: #4b5563 !important;
+  margin: 4px 8px !important;
   box-sizing: border-box !important;
   transition: all 0.3s;
 }
@@ -499,9 +580,10 @@ body {
   color: inherit !important;
 }
 
-/* 移除了所有一级菜单的悬停背景色 */
+/* 一级菜单悬停背景色 */
 .el-submenu__title:hover {
-  background: transparent !important;
+  background: #f1fafb !important;
+  color: #089BAB !important;
 }
 
 .el-submenu .el-menu-item {
@@ -514,12 +596,13 @@ body {
 }
 
 .el-submenu .el-menu--inline .el-menu-item {
-  width: 200px !important;
-  /* 修改宽度为200px */
-  height: 64px !important;
+  width: 176px !important;
+  height: 46px !important;
+  line-height: 46px !important;
   background: transparent !important;
-  color: #FFFFFF !important;
-  /* margin: 5px 8px !important; */
+  color: #6b7280 !important;
+  margin: 2px 8px 2px 16px !important;
+  border-radius: 8px !important;
   box-sizing: border-box !important;
   display: flex;
   justify-content: center;
@@ -529,27 +612,28 @@ body {
 
 /* 二级菜单悬停效果 */
 .el-submenu .el-menu--inline .el-menu-item:hover {
-  background: rgba(255, 255, 255, 0.2) !important;
+  background: #f1fafb !important;
+  color: #089BAB !important;
 }
 
 /* 当前选中的二级菜单 */
 .el-submenu .el-menu--inline .el-menu-item.is-active {
-  background: rgba(255, 255, 255, 0.3) !important;
-  color: #FFFFFF !important;
+  background: #e3f5f7 !important;
+  color: #089BAB !important;
+  font-weight: 600;
 }
 
 /* 选中状态左侧指示条 */
 .el-submenu .el-menu--inline .el-menu-item.is-active::before {
   content: "";
   position: absolute;
-  left: 10px;
+  left: 6px;
   top: 50%;
   transform: translateY(-50%);
-  width: 4px;
-  height: 26px;
-  background: #FFFFFF;
+  width: 3px;
+  height: 20px;
+  background: #089BAB;
   border-radius: 2px;
-  margin-right: 80px;
 }
 
 /* 调整菜单项文字位置 */

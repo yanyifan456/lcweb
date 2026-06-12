@@ -272,6 +272,158 @@ const router = new Router({
             import("@/views/Home/components/datadashboard/datadashboard.vue"),
         },
 
+        // ===== 新增菜单路由 =====
+        {
+          path: "operation-overview",
+          name: "OperationOverview",
+          meta: { title: "运营总览" },
+          component: () =>
+            import("@/views/Home/components/operation/OperationOverview.vue"),
+        },
+        {
+          path: "ai-model",
+          name: "AiModel",
+          meta: { title: "AI模型" },
+          component: () =>
+            import("@/views/Home/components/aimodel/AiModel.vue"),
+        },
+        // 商業運營
+        {
+          path: "mall-management",
+          name: "MallManagement",
+          meta: { title: "商城管理" },
+          component: () =>
+            import("@/views/Home/components/business/MallManagement.vue"),
+        },
+        {
+          path: "points-members",
+          name: "PointsMembers",
+          meta: { title: "積分與會員" },
+          component: () =>
+            import("@/views/Home/components/business/PointsMembers.vue"),
+        },
+        {
+          path: "payment-management",
+          name: "PaymentManagement",
+          meta: { title: "支付管理" },
+          component: () =>
+            import("@/views/Home/components/business/PaymentManagement.vue"),
+        },
+        {
+          path: "service-provider",
+          name: "ServiceProvider",
+          meta: { title: "服務提供商" },
+          component: () =>
+            import("@/views/Home/components/business/ServiceProvider.vue"),
+        },
+        // 內容 & 系統
+        {
+          path: "content-cms",
+          name: "ContentCMS",
+          meta: { title: "內容管理 CMS" },
+          component: () =>
+            import("@/views/Home/components/contentsystem/ContentCMS.vue"),
+        },
+        {
+          path: "permission-management",
+          name: "PermissionManagement",
+          meta: { title: "權限管理" },
+          component: () =>
+            import("@/views/Home/components/contentsystem/PermissionManagement.vue"),
+        },
+        {
+          path: "system-setting",
+          name: "SystemSetting",
+          meta: { title: "系統設置" },
+          component: () =>
+            import("@/views/Home/components/contentsystem/SystemSetting.vue"),
+        },
+        {
+          path: "warning-rule",
+          name: "WarningRule",
+          meta: { title: "预警规则" },
+          component: () =>
+            import("@/views/Home/components/contentsystem/WarningRule.vue"),
+        },
+        // 健康師
+        {
+          path: "hc-workbench",
+          name: "HcWorkbench",
+          meta: { title: "工作台首頁" },
+          component: () =>
+            import("@/views/Home/components/healthcoach/Workbench.vue"),
+        },
+        {
+          path: "hc-customer-list",
+          name: "HcCustomerList",
+          meta: { title: "客戶列表" },
+          component: () =>
+            import("@/views/Home/components/healthcoach/CustomerList.vue"),
+        },
+        {
+          path: "hc-customer-detail",
+          name: "HcCustomerDetail",
+          meta: { title: "客戶詳情" },
+          component: () =>
+            import("@/views/Home/components/healthcoach/CustomerDetail.vue"),
+        },
+        {
+          path: "hc-health-warning",
+          name: "HcHealthWarning",
+          meta: { title: "健康預警" },
+          component: () =>
+            import("@/views/Home/components/healthcoach/HealthWarning.vue"),
+        },
+        {
+          path: "hc-followup",
+          name: "HcFollowUp",
+          meta: { title: "随訪管理" },
+          component: () =>
+            import("@/views/Home/components/healthcoach/FollowUp.vue"),
+        },
+        {
+          path: "hc-health-plan",
+          name: "HcHealthPlan",
+          meta: { title: "健康計劃" },
+          component: () =>
+            import("@/views/Home/components/healthcoach/HealthPlan.vue"),
+        },
+        {
+          path: "hc-consultation",
+          name: "HcConsultation",
+          meta: { title: "問診管理" },
+          component: () =>
+            import("@/views/Home/components/healthcoach/Consultation.vue"),
+        },
+        {
+          path: "hc-message",
+          name: "HcMessageCenter",
+          meta: { title: "消息中心" },
+          component: () =>
+            import("@/views/Home/components/healthcoach/MessageCenter.vue"),
+        },
+        {
+          path: "hc-interpretation",
+          name: "HcPlateInterpretation",
+          meta: { title: "手板結果解讀" },
+          component: () =>
+            import("@/views/Home/components/healthcoach/PlateInterpretation.vue"),
+        },
+        {
+          path: "hc-recommend",
+          name: "HcProductRecommend",
+          meta: { title: "商品推薦" },
+          component: () =>
+            import("@/views/Home/components/healthcoach/ProductRecommend.vue"),
+        },
+        {
+          path: "hc-performance",
+          name: "HcMyPerformance",
+          meta: { title: "我的績效" },
+          component: () =>
+            import("@/views/Home/components/healthcoach/MyPerformance.vue"),
+        },
+
         // 其他子路由配置...
       ],
     },
@@ -311,7 +463,32 @@ router.beforeEach((to, from, next) => {
   }
 
   // 白名单路由（不需要权限验证）
-  const whiteList = ["/login", "/home"];
+  const whiteList = [
+    "/login",
+    "/home",
+    // 新增菜单（无需权限验证）
+    "/operation-overview",
+    "/ai-model",
+    "/mall-management",
+    "/points-members",
+    "/payment-management",
+    "/service-provider",
+    "/content-cms",
+    "/permission-management",
+    "/system-setting",
+    "/warning-rule",
+    "/hc-workbench",
+    "/hc-customer-list",
+    "/hc-customer-detail",
+    "/hc-health-warning",
+    "/hc-followup",
+    "/hc-health-plan",
+    "/hc-consultation",
+    "/hc-message",
+    "/hc-interpretation",
+    "/hc-recommend",
+    "/hc-performance",
+  ];
   if (whiteList.includes(to.path)) {
     let history = JSON.parse(
       sessionStorage.getItem("breadcrumbHistory") || "[]",
