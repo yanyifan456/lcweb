@@ -90,8 +90,9 @@ export default {
       username: sessionStorage.getItem('userName'),
       nickname: sessionStorage.getItem('orgName'),
       userPermissions: [],
-      // 新增菜单（始终显示，运营总览永远在第一个）
-      extraMenus: [
+      // 完整的菜单配置（包含所有可能的菜单项）
+      allMenus: [
+        // ===== 新增菜单（纳入权限过滤，运营总览永远在第一个）=====
         { index: "/operation-overview", title: "运营总览", icon: "el-icon-menu" },
         { index: "/ai-model", title: "AI模型", icon: "el-icon-menu" },
         {
@@ -134,10 +135,8 @@ export default {
             { index: "/hc-performance", title: "我的績效" },
           ],
         },
-        { index: "nutritionist", title: "营养师", icon: "el-icon-menu", disabled: true },
-      ],
-      // 完整的菜单配置（包含所有可能的菜单项）
-      allMenus: [
+        { index: "/nutritionist", title: "营养师", icon: "el-icon-menu", disabled: true },
+        // ===== 原有菜单 =====
 
         {
           index: "system",
@@ -234,7 +233,7 @@ export default {
 
     // 过滤后的菜单（根据用户权限）
     filteredMenus() {
-      const permissionMenus = this.allMenus
+      return this.allMenus
         .map(menu => {
           // 处理有子菜单的情况
           if (menu.children) {
@@ -257,9 +256,6 @@ export default {
           }
         })
         .filter(menu => menu !== null); // 过滤掉没有权限的菜单
-
-      // 新增菜单始终展示，且运营总览永远在第一个
-      return [...this.extraMenus, ...permissionMenus];
     }
   },
   mounted() {

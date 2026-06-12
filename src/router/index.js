@@ -463,32 +463,9 @@ router.beforeEach((to, from, next) => {
   }
 
   // 白名单路由（不需要权限验证）
-  const whiteList = [
-    "/login",
-    "/home",
-    // 新增菜单（无需权限验证）
-    "/operation-overview",
-    "/ai-model",
-    "/mall-management",
-    "/points-members",
-    "/payment-management",
-    "/service-provider",
-    "/content-cms",
-    "/permission-management",
-    "/system-setting",
-    "/warning-rule",
-    "/hc-workbench",
-    "/hc-customer-list",
-    "/hc-customer-detail",
-    "/hc-health-warning",
-    "/hc-followup",
-    "/hc-health-plan",
-    "/hc-consultation",
-    "/hc-message",
-    "/hc-interpretation",
-    "/hc-recommend",
-    "/hc-performance",
-  ];
+  // 注：新增菜单（运营总览/AI模型/商業運營/內容&系統/健康師）已纳入权限体系，
+  // 由后端 permissions 控制访问，不再放入白名单。
+  const whiteList = ["/login", "/home"];
   if (whiteList.includes(to.path)) {
     let history = JSON.parse(
       sessionStorage.getItem("breadcrumbHistory") || "[]",
